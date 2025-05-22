@@ -1,0 +1,44 @@
+
+fluents: 
+    masa_lista.                
+    fermentacion_ok.           
+    rebanadas_de_pan_horneadas(N) requires #int(N), N >= 0, N <=3.  
+    calidad_producto.           
+
+actions: 
+    mezclar.                   
+    fermentar.                 
+    hornear.                  
+    empaquetar.                
+
+always:
+    caused masa_lista after mezclar.
+    executable mezclar.
+
+    caused fermentacion_ok after fermentar.
+    executable fermentar if masa_lista.
+
+    caused -rebanadas_de_pan_horneadas(N) after hornear, rebanadas_de_pan_horneadas(N). 
+    caused rebanadas_de_pan_horneadas(N1) if N1 = N + 1 after hornear, rebanadas_de_pan_horneadas(N).
+    executable hornear if fermentacion_ok, masa_lista.
+
+    caused -rebanadas_de_pan_horneadas(N) after empaquetar, rebanadas_de_pan_horneadas(N).
+    caused rebanadas_de_pan_horneadas(0) after empaquetar.    
+    caused calidad_producto after empaquetar.
+    executable empaquetar if rebanadas_de_pan_horneadas(N), N >= 3.
+
+    inertial masa_lista.
+    inertial fermentacion_ok.
+    inertial rebanadas_de_pan_horneadas(N).
+    inertial calidad_producto.
+
+initially:
+    -masa_lista.              
+    -fermentacion_ok.         
+    rebanadas_de_pan_horneadas(0).         
+    -calidad_producto.        
+
+%noConcurrency.
+
+goal: calidad_producto, rebanadas_de_pan_horneadas(0) ? (6)
+    
