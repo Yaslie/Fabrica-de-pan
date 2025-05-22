@@ -16,6 +16,17 @@ public class PanSimulator extends JFrame {
     private final String archivoPlan = "panblanco.plan";
 
     public PanSimulator() {
+        String bienvenida = "<html><b>¡Bienvenido a la Fábrica Virtual de Pan Blanco!</b><br><br>" +
+            "Tu misión: <br>¡Producir pan de calidad y empaquetarlo como un auténtico panadero!<br><br>" +
+            "<b>Objetivo final:</b><br>" +
+            "Empaquetar el pan correctamente con 3 rebanadas horneadas.<br><br>" +
+            "<b>Pasos:</b><br>" +
+            "<b>Mezclar la masa:</b> Esto prepara la masa base. No puedes fermentar sin <br>haber mezclado primero.<br><br>" +
+            "<b>Fermentar la masa:</b> Solo puedes fermentar si la masa ya fue mezclada. <br>Este paso es crucial para que el pan tenga la textura y volumen adecuados.<br><br>" +
+            "<b>Hornear la masa:</b> Cada vez que horneas, se obtiene una rebanada de pan.<br> Debes hornear tres veces para tener las tres rebanadas necesarias para empaquetar.<br><br>" +
+            "<b>Empaquetar el pan:</b> Solo puedes empaquetar si tienes al menos tres <br>rebanadas horneadas. Al empaquetar, las rebanadas se consumen y se alcanza la meta de calidad del producto.</html>";
+        JOptionPane.showMessageDialog(this, bienvenida, "¡Bienvenido!", JOptionPane.INFORMATION_MESSAGE);
+
         setTitle("Fábrica de pan");
         setSize(600, 450);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -180,18 +191,39 @@ public class PanSimulator extends JFrame {
         }
         imagenEstado.setIcon(new ImageIcon(imgPath));
         imagenEstado.setText("");
+
+        // Mostrar ventana de felicitaciones si el producto es de calidad
+        if (calidad) {
+            Object[] options = {"Salir", "Empezar de nuevo"};
+            int opcion = JOptionPane.showOptionDialog(
+                this,
+                "<html>Felicidades<br>El proceso de producción ha sido terminado con éxito</html>",
+                "¡Proceso terminado!",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                options[0]
+            );
+            if (opcion == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } else if (opcion == JOptionPane.NO_OPTION) {
+                reiniciarFluentes();
+            }
+        }
+    }
+
+    // Agregamos este método para reiniciar los fluentes
+    private void reiniciarFluentes() {
+        masaLista = false;
+        fermentacionOk = false;
+        rebanadas = 0;
+        calidad = false;
+        actualizarEstado();
     }
 
     private void mostrarMensaje(String mensaje, String imgPath) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        JLabel texto = new JLabel(mensaje, JLabel.CENTER);
-        texto.setFont(new Font("Serif", Font.BOLD, 18));
-        texto.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JLabel imagen = new JLabel(new ImageIcon(imgPath), JLabel.CENTER);
-        panel.add(texto, BorderLayout.NORTH);
-        panel.add(imagen, BorderLayout.CENTER);
-        JOptionPane.showMessageDialog(this, panel, "Acción Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, mensaje, "Acción Exitosa", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(imgPath));
     }
 
     private void mostrarError(String error) {
