@@ -223,7 +223,14 @@ public class PanSimulator extends JFrame {
     }
 
     private void mostrarMensaje(String mensaje, String imgPath) {
-        JOptionPane.showMessageDialog(this, mensaje, "Acción Exitosa", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(imgPath));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout(0, 10));
+        JLabel texto = new JLabel("<html><center>" + mensaje + "</center></html>", JLabel.CENTER);
+        texto.setFont(new Font("Serif", Font.BOLD, 18));
+        JLabel imagen = new JLabel(new ImageIcon(imgPath), JLabel.CENTER);
+        panel.add(texto, BorderLayout.NORTH);
+        panel.add(imagen, BorderLayout.CENTER);
+        JOptionPane.showMessageDialog(this, panel, "Acción Exitosa", JOptionPane.PLAIN_MESSAGE);
     }
 
     private void mostrarError(String error) {
